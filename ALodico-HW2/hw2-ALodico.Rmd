@@ -1,0 +1,64 @@
+---
+title: "ALodico-HW2"
+author: "ASL"
+date: "10/3/2019"
+output: html_document
+---
+#read.me file
+#git commit and push process here
+#line 
+
+Each Map will include:
+
+#    A Basemap
+# check    One map with a layer of points - Students may use either circles or markers
+# check    One map with a layer of lines
+#    One map with a layer of polygons
+#    One of the maps must contain a variable which changes of the color of the elements or the marker with an accompanying legend
+#    One map must contain a functioning layersControl() with two basemaps and two different layers (by name do not need to be a different type of layer)
+
+
+
+```{r setup, include=FALSE}
+library(leaflet)
+library(rgdal)
+##line file for Pgh Bridges
+bridges <- readOGR("https://data.wprdc.org/dataset/d6e6c012-45f0-4e13-ab3b-9458fd56ad96/resource/c972b2cc-8396-4cd0-80d6-3051497da903/download/bridges_img.geojson")
+smarttrash <- readOGR("https://data.wprdc.org/dataset/b1282e47-6a70-4f18-98df-f081e7406e34/resource/5c7edf21-421c-40ec-b851-d55aa5b3585f/download/smart_trash_containers.geojson")
+#line file for Port Authority routes
+#crs <- leafletCRS()
+#PATlines <- readOGR(dsn = "C:/Users/TonyatCMU/Desktop/R4Ops/ALodico-HW2/PAAC_Routes_1903final" 
+#                    , layer = "PAAC_Routes_1903final" 
+                    # , GDAL1_integer64_policy = TRUE
+#                    )
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+
+
+```{r}
+#point map
+mp <- leaflet() %>%
+  addTiles() %>%
+  addMarkers(data = smarttrash)
+mp
+#trashy
+```
+
+## The Line file
+
+
+```{r}
+ml <- leaflet() %>%
+  addTiles() %>%
+  addPolylines(data = bridges)
+ml
+
+```
+
+```{}
+
+
+```
