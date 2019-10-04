@@ -15,7 +15,7 @@ Each Map will include:
 #    A Basemap
 # check    One map with a layer of points - Students may use either circles or markers
 # check    One map with a layer of lines
-#    One map with a layer of polygons
+# check   One map with a layer of polygons
 #    One of the maps must contain a variable which changes of the color of the elements or the marker with an accompanying legend
 #    One map must contain a functioning layersControl() with two basemaps and two different layers (by name do not need to be a different type of layer)
 
@@ -46,6 +46,11 @@ precincts <- readOGR("http://openac-alcogis.opendata.arcgis.com/datasets/faaf42d
 
 ```
 
+```{r setup, include=FALSE}
+general16 <- read.csv("https://data.wprdc.org/dataset/ea85f4b5-0b95-41b8-86ee-f1e6d16fc409/resource/3e8b23b7-aa71-4850-9379-bce87f73d684/download/2016-general-election-results-by-precinct.csv")
+```
+
+
 ## R Markdown
 
 
@@ -71,11 +76,32 @@ ml
 ```
 
 ```{r}
+library(dplyr)
+library(tigris)
+gen16total <- general16 %>%
+  filter(Contest.Title == "BALLOTS CAST - TOTAL")
+
+precinctvotes <- geo_join(precincts, gen16total, "Muni_War_1", "Precinct.Name")
+
+
+#bins <- c(0, 10, 20, 30, 50, 100, 300, 300, 500, Inf)
+pal <- colorBin("YlOrRd", domain = precinctvotes$Votes)
+
+
+#precinctvotes$Votes
+
+#filter by Contest.Title = "BALLOTS CAST - TOTAL"
+
 ms <- leaflet() %>%
   addTiles() %>%
 #  addProviderTiles(providers$Stamen.TonerLite) %>%
-#  addPolygons(data = wards)
-  addPolygons(data = precincts)
+  addPolygons(data = precinctvotes,
+              fillColor = ~pal(precinctvotes$Votes),
+              fillOpacity = 0.8)
+  # addLegend(pal = pal, 
+  #           values = precinctvotes$Votes, 
+  #           position = "bottomright", 
+  #           title = "2016 Vote totals by precinct")
 ms
 
 ```
