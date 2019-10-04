@@ -4,10 +4,11 @@ author: "ASL"
 date: "10/3/2019"
 output: html_document
 ---
-#test update commit
-#read.me file
-#git commit and push process here
-#line 
+#push commit seems to not be working. Instead, update file,
+#go to the folder in github/hw2, and drag and drop into desktop
+#version of github in the hw2-ALodico folder, Alodico-HW2 subforlder, 
+#then click on upload files. Drag and drop this file into there.
+
 
 Each Map will include:
 
@@ -25,14 +26,24 @@ library(leaflet)
 library(rgdal)
 ##line file for Pgh Bridges
 bridges <- readOGR("https://data.wprdc.org/dataset/d6e6c012-45f0-4e13-ab3b-9458fd56ad96/resource/c972b2cc-8396-4cd0-80d6-3051497da903/download/bridges_img.geojson")
+##point file for Pgh trash cans
 smarttrash <- readOGR("https://data.wprdc.org/dataset/b1282e47-6a70-4f18-98df-f081e7406e34/resource/5c7edf21-421c-40ec-b851-d55aa5b3585f/download/smart_trash_containers.geojson")
 #line file for Port Authority routes
 #crs <- leafletCRS()
+
+#Below doesnt work b/c in a zip. 
+#patlines <- readOGR("https://data.wprdc.org/dataset/6be8185a-7fc3-48c7-9b8d-716602ea03f0/resource/a31608ba-e351-4081-9b96-84fac2df2746/download/paac_routes_1903final.zip")
+#this worked, sort of, but then I had issues coaxing it into lines
 #PATlines <- readOGR(dsn = "C:/Users/TonyatCMU/Desktop/R4Ops/ALodico-HW2/PAAC_Routes_1903final" 
 #                    , layer = "PAAC_Routes_1903final" 
                     # , GDAL1_integer64_policy = TRUE
 #                    )
-knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r setup, include=FALSE}
+wards <- readOGR("http://pghgis-pittsburghpa.opendata.arcgis.com/datasets/dff605f73fe24791875567f1d942275d_0.geojson")
+precincts <- readOGR("http://openac-alcogis.opendata.arcgis.com/datasets/faaf42d7eaa041cb9fa623ac7b42f475_0.geojson")
+
 ```
 
 ## R Markdown
@@ -59,7 +70,12 @@ ml
 
 ```
 
-```{}
-
+```{r}
+ms <- leaflet() %>%
+  addTiles() %>%
+#  addProviderTiles(providers$Stamen.TonerLite) %>%
+#  addPolygons(data = wards)
+  addPolygons(data = precincts)
+ms
 
 ```
