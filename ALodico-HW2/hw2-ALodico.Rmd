@@ -1,54 +1,47 @@
 ---
 title: "ALodico-HW2"
 author: "ASL"
-date: "10/3/2019"
+date: "10/4/2019"
 output: html_document
 ---
-#push commit seems to not be working. Instead, update file,
-#go to the folder in github/hw2, and drag and drop into desktop
-#version of github in the hw2-ALodico folder, Alodico-HW2 subforlder, 
-#then click on upload files. Drag and drop this file into there.
 
 
-# check    Each Map will include:A Basemap
-# check    One map with a layer of points - Students may use either circles or markers
-# check    One map with a layer of lines
-# check    One map with a layer of polygons
-# checks   One of the maps must contain a variable which changes of the color of the elements or the marker with an accompanying legend
-# checkss  One map must contain a functioning layersControl() with two basemaps and two different layers (by name do not need to be a different type of layer)
+Setup For Maps - code and output hidden
 
-
-
-```{r setup, include=FALSE}
+```{r setup, include = FALSE}
+#global settings to limit displays of code to outputs
+knitr::opts_chunk$set(echo = FALSE)
+#adding all the necessary packages for the maps
 library(leaflet)
 library(rgdal)
+library(dplyr)
+library(tigris)
 
-#reading in all the files for the 
+#reading in all the files for the maps
 #mostly points for the first map (greenways are polygons, bridges are lines)
 greenways <- readOGR("http://pghgis-pittsburghpa.opendata.arcgis.com/datasets/d6cb53f628eb49e2991f51b07ff32bad_0.geojson")
 ballfields <- readOGR("http://pghgis-pittsburghpa.opendata.arcgis.com/datasets/87f3b2bdfa6646319a56e86521480efd_0.geojson")
 playgrounds <- readOGR("https://data.wprdc.org/dataset/4b9c5947-5645-4dbc-a7b6-eb323418fe02/resource/eb0cf52f-3da1-4b77-8f6d-891dff8adfa0/download/playgroundequipment_img.geojson")
+
 ##point files for Pgh disposal sites and smart trash cans.
-trash2 <- readOGR("https://data.wprdc.org/dataset/10dd50cf-bf29-4268-83e2-debcacea7885/resource/cdb6c800-3213-4190-8d39-495e36300263/download/wasterecovery_img.geojson")
 trash <- readOGR("https://data.wprdc.org/dataset/b1282e47-6a70-4f18-98df-f081e7406e34/resource/5c7edf21-421c-40ec-b851-d55aa5b3585f/download/smart_trash_containers.geojson")
 bridges <- readOGR("https://data.wprdc.org/dataset/d6e6c012-45f0-4e13-ab3b-9458fd56ad96/resource/c972b2cc-8396-4cd0-80d6-3051497da903/download/bridges_img.geojson")
 
-
 #polygon files for wards and precincts
-
-wards <- readOGR("http://pghgis-pittsburghpa.opendata.arcgis.com/datasets/dff605f73fe24791875567f1d942275d_0.geojson")
+#wards of Pgh seemed unnecessary, but will be helpful for future iterations, so I commented it out but left it
+#wards <- readOGR("http://pghgis-pittsburghpa.opendata.arcgis.com/datasets/dff605f73fe24791875567f1d942275d_0.geojson")
 precincts <- readOGR("http://openac-alcogis.opendata.arcgis.com/datasets/faaf42d7eaa041cb9fa623ac7b42f475_0.geojson")
+
 #2016 general election data
 general16 <- read.csv("https://data.wprdc.org/dataset/ea85f4b5-0b95-41b8-86ee-f1e6d16fc409/resource/3e8b23b7-aa71-4850-9379-bce87f73d684/download/2016-general-election-results-by-precinct.csv")
 ```
 
+# The Point Map - An incomplete map of places in Pittsburgh where you should and shouldn't toss your trash
+Also the Layer Control Map
 
-## R Markdown
-
-
-
-```{r}
-#point map
+```{r PointMap}
+#require(dplyr)
+#require(leaflet)
 #start with default basemap, then add satelite view, a black and white (AKA printer friendly) view, and a topographical basemap, AKA wrinkled. 
 #From there, I added some points and polygons of some of the places you should put trash and places you shouldnt put trash. I had to take out one of the trash groups because it was for the county, and messed up the map zoom. 
 mp <- leaflet() %>%
@@ -64,7 +57,7 @@ mp <- leaflet() %>%
 #this creates the box that lets you toggle the basemap and grouped layers
   addLayersControl(
     baseGroups = c("Default", "Satellite View", "Printer Friendly", "Wrinkled"),
-    overlayGroups = c("Put trash here", "Dont leave trash here", "Definitely don't toss trash off these"),
+    overlayGroups = c("Put trash here", "Don't leave trash here", "Definitely don't toss trash off these"),
 #this keeps the box from being a pop out
     options = layersControlOptions(collapsed = FALSE)
   )
@@ -73,10 +66,12 @@ mp
 #trashy
 ```
 
-## The Line Map
+# The Line Map - Bridges of Pittsburgh
+Also part of above point/layer control map.
 
-
-```{r}
+```{r LineMap}
+#require(dplyr)
+#require(leaflet)
 # a simple map of Pittsburgh Bridges. Its also in the first map, bu I wasnt sure if you wanted each type of tile to have a map, so I left this one here. I had to change that awful default map though
 ml <- leaflet() %>%
   addProviderTiles(providers$Hydda.Full) %>%
@@ -85,7 +80,12 @@ ml
 
 ```
 
-```{r}
+# The Polygon Map - 2016 General election voter turnout in Allegheny County by precinct
+Also the Choropleth Map
+
+```{r ChoroplethMap}
+#require(dplyr)
+#require(tigris)
 #filtering the data here for the total # of votes. 
 gen16total <- general16 %>%
   filter(Contest.Title == "BALLOTS CAST - TOTAL")
